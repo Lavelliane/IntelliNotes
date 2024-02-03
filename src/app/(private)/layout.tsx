@@ -2,14 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { Rubik } from "next/font/google";
 import {
-  DesktopOutlined,
   EditOutlined,
   FileImageOutlined,
-  FileOutlined,
   PaperClipOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -25,7 +20,6 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
