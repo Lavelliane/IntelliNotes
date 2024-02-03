@@ -23,6 +23,7 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 function SummarizeNotesPage() {
   const [result, setResult] = useState<CornellNotesSummary>();
+  const [currentCue, setCurrentCue] = useState(0)
   const [cornellNotes, setCornellNotes] = useState<string[]>([]);
   const [cornellQuestions, setCornellQuestions] = useState<string[]>([]);
   const [spinning, setSpinning] = useState(false);
@@ -78,6 +79,7 @@ function SummarizeNotesPage() {
   };
 
   function handleCueClick(idx: number) {
+    setCurrentCue(idx)
     if (result) {
       setCornellNotes(result.cornellNotes[idx].notes);
       setCornellQuestions(result.cornellNotes[idx].questions);
@@ -114,6 +116,7 @@ function SummarizeNotesPage() {
                   <CuesCard
                     content={c.cue}
                     idx={i + 1}
+                    currentCue={currentCue}
                   />
                 </div>
               ))}
