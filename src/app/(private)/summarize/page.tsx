@@ -57,6 +57,8 @@ function SummarizeNotesPage() {
           message.success(`${info.file.name} file uploaded successfully.`);
           console.log(parsedResult);
           setResult(parsedResult);
+          setCornellNotes(parsedResult.cornellNotes[0].notes)
+          setCornellQuestions(parsedResult.cornellNotes[0].questions)
         } catch (error) {
           message.error(
             `${info.file.name} file upload failed. Invalid file format.`
