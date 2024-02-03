@@ -9,14 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.3.0",
+    "@google-ai/generativelanguage": "^2.0.1",
+    "@langchain/anthropic": "^0.0.9",
+    "@langchain/community": "^0.0.21",
+    "@langchain/openai": "^0.0.13",
+    "@pinecone-database/pinecone": "^2.0.1",
+    "antd": "^5.13.2",
+    "google-auth-library": "^9.5.0",
+    "langchain": "^0.1.9",
+    "next": "14.1.0",
+    "pdf-parse": "^1.1.1",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.1.0"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
+    "@types/pdfjs-dist": "^2.10.378",
     "@types/react": "^18",
-    "@types/react-dom": "^18"
+    "@types/react-dom": "^18",
+    "typescript": "^5"
   }
 }
