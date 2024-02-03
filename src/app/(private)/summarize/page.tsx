@@ -92,7 +92,7 @@ function SummarizeNotesPage() {
             <Col span={8}>
               <Text strong>Cues</Text>
               {result?.cornellNotes.map((c, i) => (
-                <div onClick={() => handleCueClick(i)}>
+                <div onClick={() => handleCueClick(i)} key={i}>
                   <CuesCard
                     content={c.cue}
                     idx={i + 1}

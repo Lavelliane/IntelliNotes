@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Rubik } from "next/font/google";
 import {
   DesktopOutlined,
@@ -17,6 +17,8 @@ import { Breadcrumb, ConfigProvider, Layout, Menu, theme, Typography } from "ant
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { currentUser } from '@clerk/nextjs';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
@@ -60,15 +62,15 @@ const MainLayout = ({
   children: React.ReactNode;
 }>) => {
   const [collapsed, setCollapsed] = useState(false);
+  const { user } = useUser();
   const pathname = usePathname();
+  const [userName, setUserName] = useState('')
   const router = useRouter();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-  function handleMenuClick(key: string) {
-    router.push(`/${key}`);
-  }
+
 
   return (
     <ConfigProvider
@@ -109,11 +111,14 @@ const MainLayout = ({
           />
         </Sider>
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Header style={{ paddingRight: "20px", background: colorBgContainer, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
+            <Text strong>Hi, {user?.firstName}</Text>
+            <UserButton afterSignOutUrl="/" />
+          </Header>
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb style={{ margin: "16px 0" }}>
-              {pathname.split("/").map((pn) => (
-                <Breadcrumb.Item>{pn}</Breadcrumb.Item>
+              {pathname.split("/").map((pn, i) => (
+                <Breadcrumb.Item key={i}>{pn}</Breadcrumb.Item>
               ))}
             </Breadcrumb>
             <div
