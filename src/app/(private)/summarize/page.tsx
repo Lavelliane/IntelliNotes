@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
+import type { GetProp, UploadProps } from "antd";
 import {
   Col,
   message,
@@ -19,24 +19,37 @@ import CuesCard from "@/components/CuesCard";
 
 const { Dragger } = Upload;
 const { Text } = Typography;
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 function SummarizeNotesPage() {
   const [result, setResult] = useState<CornellNotesSummary>();
   const [cornellNotes, setCornellNotes] = useState<string[]>([]);
   const [cornellQuestions, setCornellQuestions] = useState<string[]>([]);
-  const [spinning, setSpinning] = useState(false)
+  const [spinning, setSpinning] = useState(false);
 
   const props: UploadProps = {
     name: "file",
+    maxCount: 1,
     multiple: true,
     action: "/api/summarize",
+    beforeUpload(file: FileType) {
+      const isPDF = file.type === "application/pdf";
+      if (!isPDF) {
+        message.error("You can only upload PDF files");
+      }
+      const isLt2M = file.size / 1024 / 1024 < 1.5;
+      if (!isLt2M) {
+        message.error("Image must smaller than 2MB!");
+      }
+      return isPDF && isLt2M;
+    },
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        setSpinning(false)
+        setSpinning(false);
         try {
           const parsedResult = CornellNotesSummarySchema.parse(
             JSON.parse(info.file.response?.result ?? "")
@@ -51,10 +64,10 @@ function SummarizeNotesPage() {
           console.error(error);
         }
       } else if (status === "error") {
-        setSpinning(false)
+        setSpinning(false);
         message.error(`${info.file.name} file upload failed.`);
       } else if (status === "uploading") {
-        setSpinning(true)
+        setSpinning(true);
       }
     },
     onDrop(e) {
@@ -83,7 +96,7 @@ function SummarizeNotesPage() {
           Click or drag file to this area to upload
         </p>
         <p className="ant-upload-hint">
-          Support for a single or bulk upload. Maximum PDF size up to 1.5 MB
+          Support for a single upload only. Maximum PDF size up to 1.5 MB
         </p>
       </Dragger>
       <Spin spinning={spinning}>
@@ -92,7 +105,10 @@ function SummarizeNotesPage() {
             <Col span={8}>
               <Text strong>Cues</Text>
               {result?.cornellNotes.map((c, i) => (
-                <div onClick={() => handleCueClick(i)} key={i}>
+                <div
+                  onClick={() => handleCueClick(i)}
+                  key={i}
+                >
                   <CuesCard
                     content={c.cue}
                     idx={i + 1}
