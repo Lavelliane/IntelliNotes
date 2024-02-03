@@ -13,12 +13,19 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, ConfigProvider, Layout, Menu, theme, Typography } from "antd";
+import {
+  Breadcrumb,
+  ConfigProvider,
+  Layout,
+  Menu,
+  theme,
+  Typography,
+} from "antd";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { currentUser } from '@clerk/nextjs';
+import { currentUser } from "@clerk/nextjs";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
@@ -40,21 +47,24 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem(<Link href="/home">My Notes</Link>, "1", <PaperClipOutlined />),
+  getItem(<Link href="/home">My Notes</Link>, "/home", <PaperClipOutlined />),
   getItem(
     <Link href="/summarize">Notes Summarizer</Link>,
-    "2",
+    "/summarize",
     <EditOutlined />
   ),
-  getItem(<Link href="/home">Video Summarizer</Link>, "3", <VideoCameraOutlined />),
-  getItem(<Link href="/home">Image to Notes</Link>, "4", <FileImageOutlined />),
+  getItem(
+    <Link href="/video-notes">Video Summarizer</Link>,
+    "/video-notes",
+    <VideoCameraOutlined />
+  ),
+  getItem(<Link href="/image-notes">Image to Notes</Link>, "/image-notes", <FileImageOutlined />),
 ];
 
-
 const rubik = Rubik({
-    subsets: ["latin"],
-    weight: "400",
-  });
+  subsets: ["latin"],
+  weight: "400",
+});
 
 const MainLayout = ({
   children,
@@ -64,13 +74,15 @@ const MainLayout = ({
   const [collapsed, setCollapsed] = useState(false);
   const { user } = useUser();
   const pathname = usePathname();
-  const [userName, setUserName] = useState('')
   const router = useRouter();
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
-
+  const [current, setCurrent] = useState(pathname);
+  useEffect(() => {
+    setCurrent(pathname);
+  }, [pathname]);
 
   return (
     <ConfigProvider
@@ -92,7 +104,7 @@ const MainLayout = ({
               display: "flex",
               alignItems: "center",
               padding: "20px 0px 20px 10px",
-              gap: "7px"
+              gap: "7px",
             }}
           >
             <Image
@@ -105,13 +117,22 @@ const MainLayout = ({
           </div>
           <Menu
             theme="dark"
-            defaultSelectedKeys={["1"]}
+            selectedKeys={[current]}
             mode="inline"
             items={items}
           />
         </Sider>
         <Layout>
-          <Header style={{ paddingRight: "20px", background: colorBgContainer, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px" }}>
+          <Header
+            style={{
+              paddingRight: "20px",
+              background: colorBgContainer,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
             <Text strong>Hi, {user?.firstName}</Text>
             <UserButton afterSignOutUrl="/" />
           </Header>
