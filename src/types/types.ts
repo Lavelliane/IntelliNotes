@@ -7,4 +7,5 @@ type CornellNote = {
 export type CornellNotesSummary = {
   cornellNotes: CornellNote[];
   summary: string[];
+  keyword: string;
 };

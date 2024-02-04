@@ -40,6 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         notes: Child of cornellNotes. An array of strings providing notes or information associated with the cue.
         summary: Parent Object. An array of strings capturing the overall summary, including the synthesis of key points, 
         connections between different topics or cues, and conclusions or insights derived from the entire set of Cornell Notes.
+        keyword: Parent Object. A single string providing a keyword/search term that generalizes the entire summary.
         `;
   const SUMMARY_PROMPT = PromptTemplate.fromTemplate(summaryTemplate);
 

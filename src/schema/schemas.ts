@@ -9,4 +9,5 @@ export const CornellNotesSummarySchema = z.object({
     })
   ),
   summary: z.array(z.string()),
+  keyword: z.string()
 });

@@ -8,7 +8,6 @@ import {
   Row,
   Upload,
   Typography,
-  Divider,
   List,
   Spin,
 } from "antd";
@@ -16,6 +15,8 @@ import { CornellNotesSummary } from "@/types/types";
 import { CornellNotesSummarySchema } from "@/schema/schemas";
 import styles from "./summarize.module.css";
 import CuesCard from "@/components/CuesCard";
+import axios from "axios";
+import Link from "next/link";
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -27,6 +28,7 @@ function SummarizeNotesPage() {
   const [cornellNotes, setCornellNotes] = useState<string[]>([]);
   const [cornellQuestions, setCornellQuestions] = useState<string[]>([]);
   const [spinning, setSpinning] = useState(false);
+  const [references, setReferences] = useState<{title: string, link: string}[]>([])
 
   const props: UploadProps = {
     name: "file",
@@ -60,6 +62,14 @@ function SummarizeNotesPage() {
           setResult(parsedResult);
           setCornellNotes(parsedResult.cornellNotes[0].notes)
           setCornellQuestions(parsedResult.cornellNotes[0].questions)
+          axios.post('/api/search/google', {query: parsedResult.keyword}).then((value: any) => {
+            setReferences(value?.data?.data?.map((v: any) => {
+              return {
+                title: v.title,
+                link: v.formattedUrl
+              }
+            }))
+          }).catch((e) => console.error(e))
         } catch (error) {
           message.error(
             `${info.file.name} file upload failed. Invalid file format.`
@@ -87,8 +97,8 @@ function SummarizeNotesPage() {
   }
 
   useEffect(() => {
-    console.log(cornellNotes);
-  }, [cornellNotes]);
+    console.log(references);
+  }, [references]);
 
   return (
     <div>
@@ -168,7 +178,28 @@ function SummarizeNotesPage() {
               />
             </Col>
           </Row>
+          <Row gutter={[16, 24]} style={{ marginTop: "20px" }}>
+            <Col span={24}>
+              <Text strong>References</Text>
+              <List
+                style={{
+                  borderRadius: "8px",
+                  borderTop: "3px solid #2acfec",
+                  padding: "20px 0px 0px 30px",
+                  marginTop: "20px"
+                }}
+                size="large"
+                pagination={{ pageSize: 5 }}
+                bordered
+                dataSource={references}
+                renderItem={(item) => <List.Item><Link href={item.link}>{item.title}</Link></List.Item>}
+              />
+            </Col>
+          </Row>
+          
+
         </div>
+        
       </Spin>
     </div>
   );
