@@ -96,10 +96,6 @@ function SummarizeNotesPage() {
     }
   }
 
-  useEffect(() => {
-    console.log(references);
-  }, [references]);
-
   return (
     <div>
       <Dragger {...props}>
