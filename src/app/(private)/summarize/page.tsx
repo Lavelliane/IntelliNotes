@@ -2,21 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { InboxOutlined } from "@ant-design/icons";
 import type { GetProp, UploadProps } from "antd";
-import {
-  Col,
-  message,
-  Row,
-  Upload,
-  Typography,
-  List,
-  Spin,
-} from "antd";
+import { Col, message, Row, Upload, Typography, List, Spin } from "antd";
 import { CornellNotesSummary } from "@/types/types";
 import { CornellNotesSummarySchema } from "@/schema/schemas";
-import styles from "./summarize.module.css";
-import CuesCard from "@/components/CuesCard";
+import dynamic from "next/dynamic";
 import axios from "axios";
-import Link from "next/link";
+
+const Editor = dynamic(() => import('../../../components/Editor'), {
+  ssr: false
+})
 
 const { Dragger } = Upload;
 const { Text } = Typography;
@@ -24,11 +18,14 @@ type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 function SummarizeNotesPage() {
   const [result, setResult] = useState<CornellNotesSummary>();
-  const [currentCue, setCurrentCue] = useState(0)
+  const [currentCue, setCurrentCue] = useState(0);
   const [cornellNotes, setCornellNotes] = useState<string[]>([]);
   const [cornellQuestions, setCornellQuestions] = useState<string[]>([]);
   const [spinning, setSpinning] = useState(false);
-  const [references, setReferences] = useState<{title: string, link: string}[]>([])
+  const [isUploading, setIsUploading] = useState(true);
+  const [references, setReferences] = useState<
+    { title: string; link: string }[]
+  >([]);
 
   const props: UploadProps = {
     name: "file",
@@ -53,6 +50,7 @@ function SummarizeNotesPage() {
       }
       if (status === "done") {
         setSpinning(false);
+        setIsUploading(false)
         try {
           const parsedResult = CornellNotesSummarySchema.parse(
             JSON.parse(info.file.response?.result ?? "")
@@ -60,16 +58,21 @@ function SummarizeNotesPage() {
           message.success(`${info.file.name} file uploaded successfully.`);
           console.log(parsedResult);
           setResult(parsedResult);
-          setCornellNotes(parsedResult.cornellNotes[0].notes)
-          setCornellQuestions(parsedResult.cornellNotes[0].questions)
-          axios.post('/api/search/google', {query: parsedResult.keyword}).then((value: any) => {
-            setReferences(value?.data?.data?.map((v: any) => {
-              return {
-                title: v.title,
-                link: v.formattedUrl
-              }
-            }))
-          }).catch((e) => console.error(e))
+          setCornellNotes(parsedResult.cornellNotes[0].notes);
+          setCornellQuestions(parsedResult.cornellNotes[0].questions);
+          axios
+            .post("/api/search/google", { query: parsedResult.keyword })
+            .then((value: any) => {
+              setReferences(
+                value?.data?.data?.map((v: any) => {
+                  return {
+                    title: v.title,
+                    link: v.formattedUrl,
+                  };
+                })
+              );
+            })
+            .catch((e) => console.error(e));
         } catch (error) {
           message.error(
             `${info.file.name} file upload failed. Invalid file format.`
@@ -81,6 +84,7 @@ function SummarizeNotesPage() {
         message.error(`${info.file.name} file upload failed.`);
       } else if (status === "uploading") {
         setSpinning(true);
+        setIsUploading(true)
       }
     },
     onDrop(e) {
@@ -89,7 +93,7 @@ function SummarizeNotesPage() {
   };
 
   function handleCueClick(idx: number) {
-    setCurrentCue(idx)
+    setCurrentCue(idx);
     if (result) {
       setCornellNotes(result.cornellNotes[idx].notes);
       setCornellQuestions(result.cornellNotes[idx].questions);
@@ -98,18 +102,27 @@ function SummarizeNotesPage() {
 
   return (
     <div>
-      <Dragger {...props}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">
-          Click or drag file to this area to upload
-        </p>
-        <p className="ant-upload-hint">
-          Support for a single upload only. Maximum PDF size up to 1.5 MB
-        </p>
-      </Dragger>
-      <Spin spinning={spinning}>
+      {isUploading && (
+        <Dragger {...props}>
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">
+            Click or drag file to this area to upload
+          </p>
+          <p className="ant-upload-hint">
+            Support for a single upload only. Maximum PDF size up to 1.5 MB
+          </p>
+        </Dragger>
+      )}
+
+      { !isUploading && result && (
+        <>
+          <Editor content={ { cornell: result } } />
+        </>
+      )}
+
+      {/* <Spin spinning={spinning}>
         <div className={styles.outputSummaryContainer}>
           <Row gutter={[16, 24]}>
             <Col span={8}>
@@ -174,7 +187,10 @@ function SummarizeNotesPage() {
               />
             </Col>
           </Row>
-          <Row gutter={[16, 24]} style={{ marginTop: "20px" }}>
+          <Row
+            gutter={[16, 24]}
+            style={{ marginTop: "20px" }}
+          >
             <Col span={24}>
               <Text strong>References</Text>
               <List
@@ -182,21 +198,22 @@ function SummarizeNotesPage() {
                   borderRadius: "8px",
                   borderTop: "3px solid #2acfec",
                   padding: "20px 0px 0px 30px",
-                  marginTop: "20px"
+                  marginTop: "20px",
                 }}
                 size="large"
                 pagination={{ pageSize: 5 }}
                 bordered
                 dataSource={references}
-                renderItem={(item) => <List.Item><Link href={item.link}>{item.title}</Link></List.Item>}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Link href={item.link}>{item.title}</Link>
+                  </List.Item>
+                )}
               />
             </Col>
           </Row>
-          
-
         </div>
-        
-      </Spin>
+      </Spin> */}
     </div>
   );
 }

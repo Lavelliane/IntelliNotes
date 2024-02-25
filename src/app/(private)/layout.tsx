@@ -5,6 +5,7 @@ import {
   EditOutlined,
   FileImageOutlined,
   PaperClipOutlined,
+  RadarChartOutlined,
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
@@ -42,6 +43,7 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem(<Link href="/home">My Notes</Link>, "/home", <PaperClipOutlined />),
+  getItem(<Link href="/browse">Community</Link>, "/browse", <RadarChartOutlined />),
   getItem(
     <Link href="/summarize">Notes Summarizer</Link>,
     "/summarize",

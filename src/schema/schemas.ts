@@ -9,5 +9,11 @@ export const CornellNotesSummarySchema = z.object({
     })
   ),
   summary: z.array(z.string()),
-  keyword: z.string()
+  keyword: z.string(),
+  mindMap: z.array(
+    z.object({
+      keypoint: z.string(),
+      subPoint: z.string(),
+    })
+  ),
 });
