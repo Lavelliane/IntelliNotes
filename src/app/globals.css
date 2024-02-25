@@ -43,16 +43,30 @@ p, h1, h2, h3, h4, h5, h6 {
 */
 #root, #__next {
   isolation: isolate;
+  --4-x-position: 20%
+  --4-y-position: 80%
+  --5-x-position: 80%
+  --5-y-position: 20%
 }
 
 .backgroundLogin {
-  background: linear-gradient(317deg, #efe9f4, #5078f2);
-  background-size: 400% 400%;
-
-  -webkit-animation: AnimationName 6s ease infinite;
-  -moz-animation: AnimationName 6s ease infinite;
-  animation: AnimationName 6s ease infinite;
-}
+  background: radial-gradient(100% 100% at var(--4-x-position) var(--4-y-position), #292c7f 0%, transparent),radial-gradient(100% 100% at var(--5-x-position) var(--5-y-position), #e8faff 0%, transparent),#1b253b;
+  animation-name: main;
+  animation-iteration-count: infinite;
+  animation-duration: 7s;
+  transition-timing-function: ease-in
+  }
+  
+  @property --4-x-position { syntax: '<percentage>'; inherits: false; initial-value: 20%; }
+  
+  @property --4-y-position { syntax: '<percentage>'; inherits: false; initial-value: 80%; }
+  
+  @property --5-x-position { syntax: '<percentage>'; inherits: false; initial-value: 80%; }
+  
+  @property --5-y-position { syntax: '<percentage>'; inherits: false; initial-value: 20%; }
+  
+  
+  @keyframes main { 25% {--4-x-position: 15%;--4-y-position: 15%;--5-x-position: 85%;--5-y-position: 80%;}50% {--4-x-position: 80%;--4-y-position: 15%;--5-x-position: 15%;--5-y-position: 85%;} }
 
 @-webkit-keyframes AnimationName {
   0%{background-position:0% 50%}
