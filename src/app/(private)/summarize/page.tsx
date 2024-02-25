@@ -7,6 +7,7 @@ import { CornellNotesSummary } from "@/types/types";
 import { CornellNotesSummarySchema } from "@/schema/schemas";
 import dynamic from "next/dynamic";
 import axios from "axios";
+import Link from "next/link";
 
 const Editor = dynamic(() => import('../../../components/Editor'), {
   ssr: false
@@ -118,7 +119,25 @@ function SummarizeNotesPage() {
 
       { !isUploading && result && (
         <>
-          <Editor content={ { cornell: result } } />
+          <Editor content={ { cornell: result } } readonly={false} isUpdating={false} />
+          <Text strong>References (View Only)</Text>
+              <List
+                style={{
+                  borderRadius: "8px",
+                  borderTop: "3px solid #2acfec",
+                  padding: "20px 0px 0px 30px",
+                  marginTop: "20px",
+                }}
+                size="large"
+                pagination={{ pageSize: 5 }}
+                bordered
+                dataSource={references}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Link href={item.link}>{item.title}</Link>
+                  </List.Item>
+                )}
+              />
         </>
       )}
 

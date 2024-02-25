@@ -1,6 +1,7 @@
+"use client"
 import { Excalidraw } from "@excalidraw/excalidraw";
 import { convertToExcalidrawElements } from "@excalidraw/excalidraw";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   content: MindMapElement[];
@@ -12,8 +13,9 @@ type MindMapElement = {
 };
 
 export default function ExcalidrawWrapper({ content }: Props) {
-  // Dynamically generate Excalidraw elements based on content
-  const elements = convertToExcalidrawElements(content.map((item, index) => {
+
+
+  const elements = content ? convertToExcalidrawElements(content.map((item, index) => {
     const x = index * 100;
     const y = index * 100;
 
@@ -31,11 +33,27 @@ export default function ExcalidrawWrapper({ content }: Props) {
         fontSize: 20,
       },
     };
-  }))
+  })) : convertToExcalidrawElements([
+    {
+      type: "rectangle",
+      x: 100,
+      y: 200,
+      width: 420,
+      strokeColor: "#f08c00",
+      backgroundColor: "#ffec99",
+      label: {
+        text: "START HERE",
+        strokeColor: "#099268",
+        fontSize: 20,
+      },
+    }
+  ])
+
+
 
   return (
     <>
-      <div style={{ height: "500px" }}>
+      <div style={{ height: "700px", width: "1000px", margin: "0 auto" }}>
         <Excalidraw initialData={{ elements, scrollToContent: true, appState: { zenModeEnabled: true } }} />
       </div>
     </>
