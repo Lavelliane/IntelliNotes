@@ -30,6 +30,7 @@ function SummarizeNotesPage() {
 
   const props: UploadProps = {
     name: "file",
+    accept: ".pdf",
     maxCount: 1,
     multiple: true,
     action: "/api/summarize",
