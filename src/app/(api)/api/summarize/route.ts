@@ -7,7 +7,6 @@ import { OpenAI } from "@langchain/openai";
 import { NextRequest, NextResponse } from "next/server";
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { JsonOutputFunctionsParser } from "langchain/output_parsers";
-import { cornellNotesExtractionSchema } from "@/utils/refineFormat";
 
 // Instantiate the parser
 const parser = new JsonOutputFunctionsParser();
