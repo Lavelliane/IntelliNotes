@@ -1,7 +1,6 @@
-import { auth } from "@clerk/nextjs";
-import { Button } from "antd";
-import Link from "next/link";
+import { auth } from "@clerk/nextjs";;
 import { redirect } from "next/navigation";
+import styles from './page.module.css'
 
 export default function Home() {
 
@@ -13,10 +12,7 @@ export default function Home() {
 
   return (
     <main>
-      Landing page coming soon!
-      <Button>
-        <Link href="/sign-in">Go to Sign In</Link>
-      </Button>
+      <h1 className={styles.title}>Hello</h1>
     </main>
   );
 }
