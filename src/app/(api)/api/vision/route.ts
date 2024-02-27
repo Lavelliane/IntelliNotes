@@ -10,16 +10,19 @@ import zodToJsonSchema from "zod-to-json-schema";
 import { CornellNotesSummarySchema } from "@/schema/schemas";
 import { JsonOutputFunctionsParser } from "langchain/output_parsers";
 
-const CONFIG = './vision-key.json'
+const CONFIG = {
+  credentials: {
+    private_key: `${process.env.VISION_API_PRIVATE_KEY}`,
+    client_email: `${process.env.VISION_API_CLIENT_EMAIL}`
+  }
+};
 
 export async function POST(req: Request, res: NextResponse) {
   const formData = await req.formData();
 
   const file = formData.get("file") as File;
 
-  const client = new vision.ImageAnnotatorClient({
-    keyFilename: CONFIG
-  });
+  const client = new vision.ImageAnnotatorClient(CONFIG);
   if (file) {
     const buffer = Buffer.from(await file.arrayBuffer());
     const [result] = await client.textDetection(buffer);
