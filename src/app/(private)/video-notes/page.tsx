@@ -16,10 +16,11 @@ function VideoNotesPage() {
 
   const [videoUrl, setVideoUrl] = useState('')
   const [result, setResult] = useState<any>()
-  const [isUploading, setIsUploading] = useState(true)
+  const [isUploading, setIsUploading] = useState(false)
   const router = useRouter()
 
   const summarizeVideo = async () => {
+    setIsUploading(true)
     try {
       const res = await axios.post('/api/video-summarize', {
         url: videoUrl
@@ -30,6 +31,7 @@ function VideoNotesPage() {
         setResult(parsedResult)
       }
     } catch (error) {
+      setIsUploading(false)
       console.error(error)
     }
   }
@@ -40,7 +42,7 @@ function VideoNotesPage() {
         <div style={{ width: "500px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "20px" }}>
           <Text>Enter YouTube video URL</Text>
           <Input allowClear name="url" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} />
-          <Button type="primary" onClick={summarizeVideo}>Summarize</Button>
+          <Button type="primary" onClick={summarizeVideo} loading={isUploading}>Summarize</Button>
         </div>
       )
 
