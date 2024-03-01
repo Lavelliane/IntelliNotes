@@ -1,8 +1,13 @@
 'use client'
+import { UserButton, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Landing() {
+
+  const { isSignedIn } = useUser()
+  const router = useRouter()
 
   return (
     <main className="h-screen">
@@ -43,12 +48,19 @@ export default function Landing() {
           </ul>
         </nav>
 
-        <a
-          href="#"
-          className="button bg-black text-white hover:bg-blue-700 font-normal py-2 px-6 rounded-xl drop-shadow-xl no-underline mt-3 mr-32"
-        >
-          Sign In
-        </a>
+        {
+          isSignedIn ? (
+          <div>
+            <UserButton />
+          </div>) : (
+            <Link
+              href="/sign-in"
+              className="button bg-black text-white hover:bg-blue-700 font-normal py-2 px-6 rounded-xl drop-shadow-xl no-underline mt-3 mr-32"
+            >
+              Sign In
+            </Link>
+          )
+        }
       </header>
 
       <section className="font-sans flex mt-14">
@@ -65,7 +77,7 @@ export default function Landing() {
               Sign up today and experience the future of note-taking for
               yourself.
             </p>
-            <button className="button bg-black border-none text-white hover:bg-blue-700 font-normal px-5 py-3 mt-4 w-[128px] rounded-20px">
+            <button onClick={() => router.push('/sign-in')} className="button bg-black border-none text-white hover:bg-blue-700 font-normal px-5 py-3 mt-4 w-[128px] rounded-20px">
               Get started
             </button>
           </div>
@@ -215,7 +227,7 @@ export default function Landing() {
             </p>
             <img src="arrow.svg" alt="arrow" />
           </div>
-           <div className="ml-10 mr-10  w-[250px] h-[305px] bg-white drop-shadow-2xl rounded-20px mt-28 flex justify-center text-center items-center flex-col">
+          <div className="ml-10 mr-10  w-[250px] h-[305px] bg-white drop-shadow-2xl rounded-20px mt-28 flex justify-center text-center items-center flex-col">
             <img src="outlining.svg" alt="cornell" />
             <h4 className="mt-4">Outlining Method</h4>
             <p className="mb-5 pl-3 pr-3">
@@ -242,9 +254,9 @@ export default function Landing() {
               within individual shapes
             </p>
             <img src="arrow.svg" alt="arrow" />
-          </div> 
+          </div>
         </div>
-        
+
         <img
           src="background-wave 1.svg"
           alt="bg-wave"
