@@ -4,13 +4,20 @@ import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import EditorJS from "@editorjs/editorjs"
 import { Button, Modal, Select, SelectProps, Typography } from 'antd';
 import { CornellInitialEditorFormat } from '@/utils/cornellInitialEditorFormat';
-import ExcalidrawWrapper from './ExcalidrawWrapper';
 import { useUser } from "@clerk/clerk-react";
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import dayjs from 'dayjs';
 import { createId } from '@paralleldrive/cuid2';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const ExcalidrawWrapper = dynamic(
+  async () => (await import("./ExcalidrawWrapper")).default,
+  {
+    ssr: false,
+  },
+)
 
 
 interface Props {
