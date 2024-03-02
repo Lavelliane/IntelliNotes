@@ -1,8 +1,13 @@
 'use client'
+import { UserButton, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Landing() {
+
+  const { isSignedIn } = useUser()
+  const router = useRouter()
 
   return (
     <main className="h-screen">
@@ -43,16 +48,23 @@ export default function Landing() {
           </ul>
         </nav>
 
-        <a
-          href="#"
-          className="button bg-black text-white hover:bg-blue-700 font-normal py-2 px-6 rounded-xl drop-shadow-xl no-underline mt-3 mr-32"
-        >
-          Sign In
-        </a>
+        {
+          isSignedIn ? (
+          <div>
+            <UserButton />
+          </div>) : (
+            <Link
+              href="/sign-in"
+              className="button bg-black text-white hover:bg-blue-700 font-normal py-2 px-6 rounded-xl drop-shadow-xl no-underline mt-3 mr-32"
+            >
+              Sign In
+            </Link>
+          )
+        }
       </header>
 
       <section className="font-sans flex mt-14">
-        <div className="flex justify-center">
+        <div className="flex justify-center items-center mt-0 mb-0 ml-auto mr-auto">
           <div className="mt-[40px] flex flex-col px-40 ml-[-32px]">
             <h1 className="text-[45px] font-bold mb-3">
               Your Smart <br /> Note-Taking Companion
@@ -65,7 +77,7 @@ export default function Landing() {
               Sign up today and experience the future of note-taking for
               yourself.
             </p>
-            <button className="button bg-black border-none text-white hover:bg-blue-700 font-normal px-5 py-3 mt-4 w-[128px] rounded-20px">
+            <button onClick={() => router.push('/sign-in')} className="button bg-black border-none text-white hover:bg-blue-700 font-normal px-5 py-3 mt-4 w-[128px] rounded-20px">
               Get started
             </button>
           </div>
@@ -116,8 +128,8 @@ export default function Landing() {
 
       {/* section 2 */}
 
-      <section className="font-sans flex mt-8">
-        <div className="flex flex-col relative">
+      <section className="font-sans flex">
+        <div className="flex flex-col relative  pl-[5rem] pr-[5rem]">
           <div className="w-[60%] justify-normal mt-[160px] flex flex-col px-40 ml-[-32px]">
             <h5 className="text-custom-blue">
               Your Ultimate Smart Note-Taking Companion
@@ -135,7 +147,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="flex flex-row">
+          <div className="flex flex-row mx-auto my-0">
             <div>
               <img src="curve.svg" alt="curve" className="ml-16 mt-[-40]" />
             </div>
@@ -204,7 +216,7 @@ export default function Landing() {
         <h1 className="flex justify-center text-center mt-36">
           We provide best feature for <br /> note-taking
         </h1>
-        <div className="flex justify-center flex-row ">
+        <div className="flex justify-center items-center mx-0 mt-[20px] -z-10" style={{ background: `url('/wave.svg')`, backgroundSize: "cover" }}>
           <div className="w-[250px] h-[305px] bg-white drop-shadow-2xl rounded-20px mt-28 flex justify-center text-center items-center flex-col">
             <img src="cornell.svg" alt="cornell" />
             <h4 className="mt-4">Cornell Note Taking</h4>
@@ -244,11 +256,7 @@ export default function Landing() {
             <img src="arrow.svg" alt="arrow" />
           </div>
         </div>
-        <img
-          src="wave.svg"
-          alt="wave"
-          className=" my-[-286px] absolute -z-10"
-        />
+
         <img
           src="background-wave 1.svg"
           alt="bg-wave"
@@ -256,7 +264,7 @@ export default function Landing() {
         />
       </section>
 
-      <section className="font-sans">
+      <section className="font-sans mt-[]">
         <h1 className="text-[46px] bg-gradient-to-r from-sky-600 to-fuchsia-700 text-transparent bg-clip-text flex justify-center text-center mt-[348px]">
           Browse Notes
         </h1>
@@ -289,7 +297,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="bg-red-500 w-[450px] h-[220px] mt-20 ml-12 border-l-4 border-indigo-500">
-</div>
+          </div>
 
         </div>
       </section>
