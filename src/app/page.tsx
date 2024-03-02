@@ -5,7 +5,7 @@ import { useEffect } from "react";
 export default function Landing() {
 
   return (
-    <main className="h-screen overflow-x-hidden">
+    <main className="h-screen">
       <header className="text-white flex items-center justify-between p-4 font-sans mt-[7px]">
         <div className="items-center flex ml-32">
           <img src="logo.svg" alt="logo" className="logo w-10 h-16 z-[-0]" />
