@@ -12,13 +12,23 @@ module.exports = {
     extend: {
       fontFamily: {
         'sans': ['Roboto', 'system-ui'],
+        'man' : ['Manrope', 'sans-serif'],
         
       },
       colors: {
-        'custom-gray': '#7C7C7C',
+        'custom-gray': '#7C7C7C', 
         'custom-light-blue': '#E8FAFF',
         'custom-gray': '#9D9B9B',
         'custom-blue': '#2029F4',
+        'custom-bg-green' : '#D8FFCA',
+        'custom-text-green' : '#00C969',
+        'custom-bg-red' : '#FFEAEA',
+        'custom-text-red' : '#FF8E8E',
+        'custom-bg-yellow' : '#FFF7D9',
+        'custom-text-yellow' : '#FBBC05',
+        'custom-border-gray' : '#DAD4D4',
+        'custom-bg-blue' : '#00E1F0',
+        'custom-button-blue' : '#00E1F0'
       },
       borderRadius: {
         '100px': '50px',
