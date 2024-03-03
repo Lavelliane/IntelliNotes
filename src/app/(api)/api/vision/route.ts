@@ -33,7 +33,7 @@ export async function POST(req: Request, res: NextResponse) {
       const prompt = new ChatPromptTemplate({
         promptMessages: [
           SystemMessagePromptTemplate.fromTemplate(
-            "You are an expert in summarizing images and fixing spelling and grammar errors. Your goal is to create a Cornell Notes format of an Image"
+            "You are an expert in summarizing images and fixing spelling and grammar errors. Your goal is to create a Cornell Notes format of an Image as well as a quiz to test the user's understanding"
           ),
           HumanMessagePromptTemplate.fromTemplate(
             "Additional context: {inputText}"

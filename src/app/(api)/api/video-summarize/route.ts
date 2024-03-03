@@ -46,6 +46,10 @@ export async function POST(req: Request, res: NextResponse){
         cue: Child of cornellNotes. A string representing the main topic or cue.
         questions: Child of cornellNotes. An array of strings containing questions related to the cue.
         notes: Child of cornellNotes. An array of strings providing notes or information associated with the cue.
+        quiz: Parent. An array of objects that represent questions in a quiz Minimum of 5, maximum of 10.
+        question: A property inside one element of quiz. A question from the topic.
+        choices: A property inside one element of quiz. An array of strings with only 1 correct answer.
+        answer: A property inside one element of quiz. The index of the correct answer from choices.
         summary: Parent Object. An array of strings capturing the overall summary, including the synthesis of key points, 
         connections between different topics or cues, and conclusions or insights derived from the entire set of Cornell Notes.
         keyword: Parent Object. A single string providing a keyword/search term that generalizes the entire summary.
@@ -66,6 +70,10 @@ export async function POST(req: Request, res: NextResponse){
             cue: Child of cornellNotes. A string representing the main topic or cue.
             questions: Child of cornellNotes. An array of strings containing questions related to the cue.
             notes: Child of cornellNotes. An array of strings providing notes or information associated with the cue.
+            quiz: Parent. An array of objects that represent questions in a quiz Minimum of 5, maximum of 10.
+            question: A property inside one element of quiz. A question from the topic.
+            choices: A property inside one element of quiz. An array of strings with only 1 correct answer.
+            answer: A property inside one element of quiz. The index of the correct answer from choices.
             summary: Parent Object. An array of strings capturing the overall summary, including the synthesis of key points, 
             connections between different topics or cues, and conclusions or insights derived from the entire set of Cornell Notes.
             keyword: Parent Object. A single string providing a keyword/search term that generalizes the entire summary.

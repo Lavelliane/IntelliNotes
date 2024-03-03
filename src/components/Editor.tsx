@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import EditorJS from "@editorjs/editorjs"
-import { Button, Modal, Select, SelectProps, Typography } from 'antd';
+import { Button, Drawer, Modal, Radio, Select, SelectProps, Typography } from 'antd';
 import { CornellInitialEditorFormat } from '@/utils/cornellInitialEditorFormat';
 import { useUser } from "@clerk/clerk-react";
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
@@ -38,6 +38,31 @@ const Editor: React.FC<Props> = ({ content, readonly = false, firebaseEditorData
   const [isModalOpen, setIsModalOpen] = useState(false);
   const ref = useRef<EditorJS>()
   const router = useRouter()
+  const [open, setOpen] = useState(false);
+  const [selectedAnswers, setSelectedAnswers] = useState(Array(content?.cornell?.quiz.length).fill(null));
+  const [correctAnswers, setCorrectAnswers] = useState<any>(Array(content?.cornell?.quiz.length).fill(null))
+  const [result, setResult] = useState<string>('')
+
+  const handleRadioChange = (questionIndex: number, choiceIndex: number) => {
+    const updatedAnswers = [...selectedAnswers];
+    updatedAnswers[questionIndex] = choiceIndex;
+    setSelectedAnswers(updatedAnswers);
+  };
+
+  useEffect(() => {
+    if (content) {
+      const newCorrectAnswers = content.cornell.quiz.map((e: any) => e.answer);
+      setCorrectAnswers(newCorrectAnswers);
+    }
+  }, [content]);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   //MODAL
   const showModal = () => {
@@ -52,6 +77,7 @@ const Editor: React.FC<Props> = ({ content, readonly = false, firebaseEditorData
     setIsModalOpen(false);
   };
 
+  const { Text } = Typography
 
   const initializeEditor = async () => {
     const EditorJS = (await import("@editorjs/editorjs")).default
@@ -147,12 +173,52 @@ const Editor: React.FC<Props> = ({ content, readonly = false, firebaseEditorData
   };
 
 
+  function handleQuizSubmit(): void {
+    let correctIndexes: number[] = [];
+  
+    const updatedSelectedAnswers = selectedAnswers.map((selectedAnswer, i) => {
+      const correctAnswer = correctAnswers[i];
+      if (selectedAnswer === correctAnswer) {
+        correctIndexes.push(i + 1); // Push index of correct answer
+      }
+      return {
+        value: selectedAnswer,
+        isCorrect: selectedAnswer === correctAnswer,
+      };
+    });
+  
+    setSelectedAnswers(updatedSelectedAnswers);
+  
+    const totalQuestions = content?.cornell?.quiz.length || 0;
+    const correctPercentage = ((correctIndexes.length / totalQuestions) * 100).toFixed(2);
+  
+    if (correctIndexes.length === 0) {
+      setResult('No answers are correct');
+    } else if (correctIndexes.length === totalQuestions) {
+      setResult(`All answers are correct. Total: ${correctPercentage}%`);
+    } else {
+      setResult(`Answers on questions ${correctIndexes.join(', ')} are correct. Total: ${correctPercentage}%`);
+    }
+  }
+  
+  
+  const getRadioColor = (questionIndex: number, choiceIndex: number): string => {
+    const selectedAnswer = selectedAnswers[questionIndex]?.value;
+    const correctAnswer = correctAnswers[questionIndex];
+    if (selectedAnswer === choiceIndex) {
+      return choiceIndex === correctAnswer ? 'green' : 'red';
+    }
+    return '#000'
+  };
+
+
   return (
     <>
       <div id='editorjs' style={{ height: "auto", paddingBottom: "0px" }}></div>
       <Title level={3} style={{ textAlign: "center" }}>Visualize your thoughts 🖼️💡</Title>
       <ExcalidrawWrapper content={content?.cornell?.mindMap || []} />
       <Button type='primary' onClick={showModal} size='large' style={{ margin: "20px auto", display: "block", marginTop: "20px" }}>Confirm Changes</Button>
+      <Button onClick={showDrawer}>Take Quiz</Button>
       <Modal title="Confirm Changes" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
         <Select
           mode="tags"
@@ -160,11 +226,26 @@ const Editor: React.FC<Props> = ({ content, readonly = false, firebaseEditorData
           placeholder="Tags Mode"
           onChange={handleChange}
           options={subjects}
-          
         />
-        <Button onClick={() => save(false)} type='primary' style={{ marginRight: "10px"}}>Save</Button>
+        <Button onClick={() => save(false)} type='primary' style={{ marginRight: "10px" }}>Save</Button>
         <Button onClick={() => save(true)} type='primary' ghost>Publish</Button>
       </Modal>
+      <Drawer title="Test your understanding" onClose={onClose} open={open}>
+        {content?.cornell?.quiz.map((q: any, i: number) => (
+          <div key={i} style={{ marginBottom: '1rem' }}>
+            <Text strong className='block'>{`${i + 1}.) ` + q.question}</Text>
+            <Radio.Group onChange={(e) => handleRadioChange(i, e.target.value)} value={selectedAnswers[i]}>
+              {q.choices.map((e: any, j: number) => (
+                <div key={j}>
+                  <Radio value={j} style={{ color: getRadioColor(i, j) }}>{e}</Radio>
+                </div>
+              ))}
+            </Radio.Group>
+          </div>
+        ))}
+        <Button type='primary' className='mt-[20px] block' onClick={handleQuizSubmit}>Submit Answers</Button>
+        { result && (<Text className={`${result === "No answers are correct" ? "text-red-500" : "text-green-500"}  mt-[50px]`} strong>{result}</Text>)}
+      </Drawer>
     </>
 
   )
